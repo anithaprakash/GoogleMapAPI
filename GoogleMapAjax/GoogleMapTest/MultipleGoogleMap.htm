@@ -1,0 +1,86 @@
+﻿<!DOCTYPE html>
+ <html>
+   <head>
+     <title>Google Maps JavaScript API v3 Example: Map Simple</title>
+     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+     <meta charset="utf-8">
+     <style>
+       html, body, #map-canvas {
+         margin: 0;
+         padding: 0;
+         height: 100%;
+	 width: 100%;
+       }
+#map-canvas0, #map-canvas1 { height: 300px; width: 500px; }
+     </style>
+<script src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
+<script type="text/javascript">
+    var directionsDisplay = [];
+    var directionsService = [];
+    var map = [];
+    var coordinates;
+    var arrayOfObjects = [];
+    arrayOfObjects[1] = { latitude: 40.735657, longitude: -74.172367 }; // Newark, NJ
+    arrayOfObjects[0] = { latitude: 42.358431, longitude: -71.059773 }; // Boston, MA
+
+    function initialize() {
+
+        for (var i = 0; i < arrayOfObjects.length; i++) {
+            directionsService[i] = new google.maps.DirectionsService();
+
+            directionsDisplay[i] = new google.maps.DirectionsRenderer();
+
+            var latitude = arrayOfObjects[i].latitude;
+            var longitude = arrayOfObjects[i].longitude;
+
+            coordinates = new google.maps.LatLng(latitude, longitude);
+
+            var mapOptions = {
+                zoom: 15,
+                center: coordinates
+            };
+
+            var numString = i.toString();
+            var thisMapID = "map-canvas" + numString;
+
+            map[i] = new google.maps.Map(document.getElementById(thisMapID), mapOptions);
+            directionsDisplay[i].setMap(map[i]);
+
+            calcRoute(i);
+        };
+    }
+
+    var startingLocation = new google.maps.LatLng(40.714353, -74.005973); // (40.768211, -73.957721);
+
+    function calcRoute(index) {
+        var request = {
+            origin: startingLocation,
+            destination: map[index].getCenter(),
+            travelMode: google.maps.TravelMode.TRANSIT
+        };
+
+        directionsService[index].route(request, function (response, status) {
+            if (status == google.maps.DirectionsStatus.OK) {
+                directionsDisplay[index].setDirections(response);
+            } else { alert("Directions request failed: " + status); }
+        });
+    }
+    google.maps.event.addDomListener(window, 'load', initialize);
+  </script>
+</head>
+<body>
+<table><tr><td>
+     <div id="map-canvas0"></div>
+<br>map-canvas0
+</td></tr><tr><td>
+     <div id="map-canvas1"></div>
+<br>map-canvas1
+</td></tr></table>
+<script src="http://www.google-analytics.com/urchin.js" type="text/javascript"> 
+</script> 
+<script type="text/javascript">
+    _uacct = "UA-162157-1";
+    urchinTracker();
+</script> 
+</body>
+</html>
